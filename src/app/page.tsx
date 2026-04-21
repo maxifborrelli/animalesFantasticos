@@ -38,12 +38,16 @@ const Circle = dynamic(
 
 import type { Mascota } from "../types/indexMascota";
 
+// TODO (estado global): cuando haya backend, reemplazar mockPets por un fetch a GET /reports
+// y mover los datos a un Context o Zustand store compartido con nuevoReporte/page.tsx
+// para que los reportes nuevos aparezcan acá sin recargar
 const mockPets: Mascota[] = [
   {
     id: "1",
     name: "Max",
     species: "Perro",
     breed: "Golden Retriever",
+    size: "Mediano",
     image:
       "https://images.unsplash.com/photo-1649974139924-875a581c9e0f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsb3N0JTIwZ29sZGVuJTIwcmV0cmlldmVyJTIwZG9nfGVufDF8fHx8MTc3NDkxMTE3OHww&ixlib=rb-4.1.0&q=80&w=1080",
     distance: "0.5 km",
@@ -52,12 +56,14 @@ const mockPets: Mascota[] = [
     coordinates: [-34.5875, -58.42],
     description:
       "Golden Retriever macho de 3 años, muy amigable. Lleva collar azul con placa de identificación. Responde al nombre de Max. Se perdió cerca del parque.",
+    createdAt: "2026-04-20T10:00:00",
   },
   {
     id: "2",
     name: "Luna",
     species: "Gato",
     breed: "Negro Común",
+    size: "Chico",
     image:
       "https://images.unsplash.com/photo-1660339825696-9bfdc4cf4ed2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsb3N0JTIwYmxhY2slMjBjYXR8ZW58MXx8fHwxNzc0OTk4MDQyfDA&ixlib=rb-4.1.0&q=80&w=1080",
     distance: "1.2 km",
@@ -66,12 +72,14 @@ const mockPets: Mascota[] = [
     coordinates: [-34.5885, -58.395],
     description:
       "Gata negra de ojos verdes, muy tímida. No tiene collar. Tiene una pequeña mancha blanca en el pecho. Es asustadiza con extraños.",
+    createdAt: "2026-04-20T11:00:00",
   },
   {
     id: "3",
     name: "Rocky",
     species: "Perro",
     breed: "Beagle",
+    size: "Mediano",
     image:
       "https://images.unsplash.com/photo-1737699430579-3f20b8abc613?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsb3N0JTIwYmVhZ2xlJTIwZG9nfGVufDF8fHx8MTc3NDk5ODA0Mnww&ixlib=rb-4.1.0&q=80&w=1080",
     distance: "2.8 km",
@@ -80,12 +88,14 @@ const mockPets: Mascota[] = [
     coordinates: [-34.5633, -58.4583],
     description:
       "Beagle tricolor muy juguetón. Lleva collar rojo con chapita de identificación. Le encanta correr y perseguir ardillas. Es muy sociable.",
+    createdAt: "2026-04-20T12:00:00",
   },
   {
     id: "4",
     name: "Mimi",
     species: "Gato",
     breed: "Atigrado",
+    size: "Grande",
     image:
       "https://images.unsplash.com/photo-1675504661658-33940d979a6a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsb3N0JTIwdGFiYnklMjBjYXR8ZW58MXx8fHwxNzc0OTk4MDQyfDA&ixlib=rb-4.1.0&q=80&w=1080",
     distance: "3.5 km",
@@ -94,12 +104,14 @@ const mockPets: Mascota[] = [
     coordinates: [-34.5992, -58.4383],
     description:
       "Gata atigrada de tamaño mediano, muy cariñosa. Tiene collar rosa con cascabel. Está esterilizada y tiene microchip.",
+    createdAt: "2026-04-20T13:00:00",
   },
   {
     id: "5",
     name: "Toby",
     species: "Perro",
     breed: "Labrador",
+    size: "Grande",
     image:
       "https://images.unsplash.com/photo-1697777869187-a54d754fcf97?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsb3N0JTIwbGFicmFkb3IlMjBwdXBweXxlbnwxfHx8fDE3NzQ5OTgwNDN8MA&ixlib=rb-4.1.0&q=80&w=1080",
     distance: "4.1 km",
@@ -108,12 +120,14 @@ const mockPets: Mascota[] = [
     coordinates: [-34.6158, -58.4392],
     description:
       "Labrador joven color chocolate. Muy enérgico y amigable. Necesita medicación diaria. Por favor contactar urgente.",
+    createdAt: "2026-04-20T14:00:00",
   },
   {
     id: "6",
     name: "Nieve",
     species: "Gato",
     breed: "Blanco Persa",
+    size: "Mediano",
     image:
       "https://images.unsplash.com/photo-1761485465180-3c9d75fd7269?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsb3N0JTIwd2hpdGUlMjBraXR0ZW58ZW58MXx8fHwxNzc0OTk4MDQzfDA&ixlib=rb-4.1.0&q=80&w=1080",
     distance: "1.8 km",
@@ -122,6 +136,7 @@ const mockPets: Mascota[] = [
     coordinates: [-34.5442, -58.4578],
     description:
       "Gato persa blanco de pelo largo. Muy tranquilo y casero. No está acostumbrado a estar en la calle. Ojos azules.",
+    createdAt: "2026-04-20T15:00:00",
   },
 ];
 
@@ -148,6 +163,7 @@ export default function Home() {
     });
   }, []);
 
+  // TODO (estado global): acá aplicar los filtros reales sobre los datos del store/backend
   const filteredPets = useMemo(() => mockPets, []);
 
   const handlePetSelect = (pet: Mascota) => {
@@ -281,9 +297,8 @@ export default function Home() {
               <article
                 key={pet.id}
                 onClick={() => handlePetSelect(pet)}
-                className={`cursor-pointer overflow-hidden rounded-2xl border bg-white transition-all hover:shadow-lg ${
-                  selectedPet?.id === pet.id ? "ring-2 ring-primary shadow-lg" : ""
-                }`}
+                className={`cursor-pointer overflow-hidden rounded-2xl border bg-white transition-all hover:shadow-lg ${selectedPet?.id === pet.id ? "ring-2 ring-primary shadow-lg" : ""
+                  }`}
               >
                 <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
                   <img
@@ -310,6 +325,10 @@ export default function Home() {
                     <div className="flex items-center gap-1.5">
                       <Calendar className="h-3.5 w-3.5 flex-shrink-0" />
                       <span>Visto {pet.lastSeen}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Calendar className="h-3.5 w-3.5 flex-shrink-0" />
+                      <span>Publicado {new Date(pet.createdAt).toLocaleString("es-AR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "America/Argentina/Buenos_Aires"})}</span>
                     </div>
                   </div>
                 </div>
@@ -403,6 +422,21 @@ export default function Home() {
                   <div>
                     <p className="mb-1 text-sm text-muted-foreground">Último avistamiento</p>
                     <p className="text-sm">{selectedPet.lastSeen}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Calendar className="mt-0.5 h-5 w-5 flex-shrink-0 text-primary" />
+                  <div>
+                    <p className="mb-1 text-sm text-muted-foreground">Fecha de publicación</p>
+                    <p className="text-sm">
+                      {new Date(selectedPet.createdAt).toLocaleDateString("es-AR", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </p>
                   </div>
                 </div>
               </div>
