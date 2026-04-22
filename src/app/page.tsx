@@ -9,7 +9,6 @@ import {
   X,
 } from "lucide-react";
 import "leaflet/dist/leaflet.css";
-import Navbar from "../components/Navbar";
 
 const MapContainer = dynamic(
   () => import("react-leaflet").then((mod) => mod.MapContainer),
@@ -157,8 +156,6 @@ export default function Home() {
 
   return (
     <main className="flex h-screen flex-col bg-background">
-      <Navbar />
-
       <div className="border-b bg-white px-4 py-3">
         <div className="mx-auto flex max-w-screen-2xl items-center justify-between">
           <div className="flex items-center gap-3">

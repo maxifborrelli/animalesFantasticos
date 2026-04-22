@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import dynamic from "next/dynamic";
 import { ChevronDown, Upload } from "lucide-react";
 import "leaflet/dist/leaflet.css";
-import Navbar from "../../components/Navbar";
 
 const MapContainer = dynamic(
   () => import("react-leaflet").then((mod) => mod.MapContainer),
@@ -34,8 +33,6 @@ export default function NuevoReporte() {
 
   return (
     <div className="min-h-screen bg-background pb-10">
-      <Navbar />
-
       {/* Contenedor Principal */}
       <main className="mx-auto mt-6 max-w-4xl px-4 md:mt-8">
         <div className="grid gap-6 md:grid-cols-2 md:gap-8">
