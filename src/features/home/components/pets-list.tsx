@@ -12,7 +12,12 @@ interface PetsListProps {
   onPetSelect: (pet: Pet) => void;
 }
 
-export function PetsList({ pets, selectedPetId, loadingDbPets, onPetSelect }: PetsListProps) {
+export function PetsList({
+  pets,
+  selectedPetId,
+  loadingDbPets,
+  onPetSelect,
+}: PetsListProps) {
   return (
     <div className="w-full overflow-y-auto border-r bg-secondary/20 md:w-2/5 lg:w-1/3">
       <div className="grid gap-4 p-4 sm:grid-cols-2 md:grid-cols-1">
@@ -38,14 +43,23 @@ export function PetsList({ pets, selectedPetId, loadingDbPets, onPetSelect }: Pe
               </div>
             </div>
             <div className="p-4">
-              <h3 className="mb-1 line-clamp-1 text-base font-semibold">{pet.name}</h3>
+              <h3 className="mb-1 line-clamp-1 text-base font-semibold">
+                {pet.name}
+              </h3>
               <p className="mb-3 text-sm text-muted-foreground">
                 {pet.species} • {pet.breed}
               </p>
               <div className="flex flex-col gap-1.5 text-xs text-muted-foreground">
                 <div className="flex items-center gap-1.5">
                   <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
-                  <span className="line-clamp-1">{pet.location}</span>
+                  <div className="flex flex-col">
+                      <span className="line-clamp-1 font-medium">
+                        {pet.neighborhood || "Ubicación"}
+                      </span>
+                      <span className="text-xs text-muted-foreground line-clamp-1">
+                        {pet.location}
+                      </span>
+                  </div>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <Calendar className="h-3.5 w-3.5 flex-shrink-0" />

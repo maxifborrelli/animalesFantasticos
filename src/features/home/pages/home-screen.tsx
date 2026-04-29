@@ -106,8 +106,11 @@ export function HomeScreen() {
   };
 
   const openReportModalAt = (coordinates: [number, number]) => {
+    const latitude = Number(coordinates[0]);
+    const longitude = Number(coordinates[1]);
+
     // 1. Guardamos la ubicación seleccionada
-    setReportLocation(coordinates);
+    setReportLocation([latitude, longitude]);
     // 2. En lugar de abrir el formulario directamente, abrimos el modal de selección
     setSelectionModalOpen(true);
   };
@@ -164,8 +167,8 @@ export function HomeScreen() {
             imageUrl: reportForm.imageUrl,
             description: reportForm.description,
             locationText: reportForm.locationText,
-            latitude: reportLocation[0],
-            longitude: reportLocation[1],
+            latitude: Number(reportLocation[0]),
+            longitude: Number(reportLocation[1]),
           },
           finder: {
             fullName: reportForm.ownerName,

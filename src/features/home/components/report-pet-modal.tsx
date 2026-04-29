@@ -111,7 +111,7 @@ export function ReportPetModal({
             <input
               value={reportForm.locationText}
               onChange={(event) => onFormChange("locationText", event.target.value)}
-              placeholder="Ej: Av. Santa Fe 2400"
+              placeholder="neighborhood, city"
               className="h-11 w-full rounded-xl border border-border bg-white px-3"
             />
           </label>
