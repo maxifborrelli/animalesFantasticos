@@ -62,20 +62,17 @@ export function LostPetModal({ open, onClose, reportLocation }: LostPetModalProp
 
   useEffect(() => {
     if (reportLocation) {
-      setCoordinates([Number(reportLocation[0]), Number(reportLocation[1])]);
+      setCoordinates(reportLocation);
     }
   }, [reportLocation]);
 
   if (!open) return null;
 
   const handleMapClick = (lat: number, lng: number) => {
-    const latitude = Number(lat);
-    const longitude = Number(lng);
-
-    setCoordinates([latitude, longitude]);
+    setCoordinates([lat, lng]);
     // Opcional: Actualizar el texto de ubicación con las nuevas coordenadas
     if (!location) {
-      setLocation(`${latitude.toFixed(5)}, ${longitude.toFixed(5)}`);
+      setLocation(`${lat.toFixed(5)}, ${lng.toFixed(5)}`);
     }
     setErrors((prev) => ({ ...prev, location: "" }));
   };
@@ -135,8 +132,8 @@ export function LostPetModal({ open, onClose, reportLocation }: LostPetModalProp
             imageUrl: image,
             lastSeen,
             locationText: location,
-            latitude: Number(coordinates?.[0] ?? 0),
-            longitude: Number(coordinates?.[1] ?? 0),
+            latitude: coordinates?.[0] || 0,
+            longitude: coordinates?.[1] || 0,
             description,
           },
           owner: {

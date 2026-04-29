@@ -7,7 +7,6 @@ import type { LeafletMouseEvent } from "leaflet";
 import { FormEvent, useEffect, useState } from "react";
 import { ChevronDown, Loader2, PawPrint, Upload, X } from "lucide-react";
 import type { ApiFoundPet } from "@/features/home/types";
-import { useReverseGeocoding } from "../hooks/use-reverse-geocoding";
 
 const MapContainer = dynamic(
   () => import("react-leaflet").then((mod) => mod.MapContainer),
@@ -40,8 +39,6 @@ const MapClickCapture = dynamic(
     }),
   { ssr: false },
 );
-
-
 
 type ReportFormState = {
   name: string;
@@ -128,12 +125,6 @@ export function NewReportScreen() {
   const [savingPet, setSavingPet] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  // obtener nombre de ubicación y dirección formateada
-  const lat = reportLocation?.[0];
-  const lng = reportLocation?.[1];
-  const { locationName, address, loading } = useReverseGeocoding(lat, lng);
-
-
   useEffect(() => {
     import("leaflet").then((L) => {
       L.Icon.Default.mergeOptions({
@@ -179,10 +170,9 @@ export function NewReportScreen() {
   }, []);
 
   const handleMapClick = (coordinates: [number, number]) => {
-    const latitude = Number(coordinates[0]);
-    const longitude = Number(coordinates[1]);
+    const [latitude, longitude] = coordinates;
 
-    setReportLocation([latitude, longitude]);
+    setReportLocation(coordinates);
     setErrors((current) => ({ ...current, coordinates: "" }));
     setReportForm((current) => ({
       ...current,
@@ -246,8 +236,8 @@ export function NewReportScreen() {
             imageUrl: reportForm.imageUrl,
             description: reportForm.description,
             locationText: reportForm.locationText,
-            latitude: Number(reportLocation[0]),
-            longitude: Number(reportLocation[1]),
+            latitude: reportLocation[0],
+            longitude: reportLocation[1],
           },
           finder: {
             fullName: reportForm.ownerName,
@@ -435,15 +425,11 @@ export function NewReportScreen() {
             <section>
               <h2 className="mb-4 text-lg font-bold text-foreground">2. Ubicacion</h2>
               <div className="rounded-3xl border border-border bg-white p-4">
-                {/* 🧭 Resumen de ubicación */}
-                {reportLocation && (
-                  <div className="rounded-2xl bg-muted/30 px-3 py-2 text-sm">
-                    <span className="font-medium">Ubicación seleccionada: </span>
-                    {loading
-                      ? "Buscando..."
-                      : `${locationName || "Sin datos"} (${lat?.toFixed(4)}, ${lng?.toFixed(4)})`}
-                  </div>
-                )}
+                <p className="mb-2 text-xs text-muted-foreground">
+                  {reportLocation
+                    ? `Ubicacion seleccionada: ${reportLocation[0].toFixed(4)}, ${reportLocation[1].toFixed(4)}`
+                    : "Hace click en el mapa para marcar la ubicacion"}
+                </p>
 
                 <div
                   className={`relative h-[280px] w-full overflow-hidden rounded-2xl border ${
@@ -550,20 +536,15 @@ export function NewReportScreen() {
                   {errors.description && <p className="text-xs text-red-500">{errors.description}</p>}
                 </label>
 
-              <label className="space-y-1.5 text-sm sm:col-span-2">
-                <span className="font-medium">Dirección detectada</span>
-
-                  <div className="min-h-[44px] w-full rounded-2xl border border-border px-3 py-2 flex items-center bg-background">
-                    {loading
-                      ? "Obteniendo dirección..."
-                      : address || "Seleccioná un punto en el mapa"}
-                  </div>
-                {reportLocation && (
-                  <span className="text-xs text-muted-foreground">
-                    📍 {lat?.toFixed(4)}, {lng?.toFixed(4)}
-                  </span>
-                )}
-              </label>
+                <label className="space-y-1.5 text-sm sm:col-span-2">
+                  <span className="font-medium">Direccion o referencia</span>
+                  <input
+                    value={reportForm.locationText}
+                    onChange={(event) => handleFormChange("locationText", event.target.value)}
+                    placeholder="Ej: Av. Santa Fe 2400"
+                    className="h-11 w-full rounded-2xl border border-border px-3"
+                  />
+                </label>
               </div>
             </div>
           </section>

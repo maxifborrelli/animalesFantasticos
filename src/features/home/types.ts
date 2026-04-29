@@ -9,7 +9,6 @@ export interface Pet {
   lastSeen: string;
   createdAt?: string;
   location: string;
-  neighborhood?: string;
   coordinates: [number, number];
   description: string;
   ownerName?: string;
@@ -24,7 +23,6 @@ export interface ApiFoundPet {
   imageUrl: string;
   description: string;
   locationText: string;
-  neighborhood?: string;
   latitude: number;
   longitude: number;
   foundAt: string;

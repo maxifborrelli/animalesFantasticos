@@ -11,7 +11,6 @@ export function mapApiPetToUiPet(apiPet: ApiFoundPet): Pet {
     lastSeen: formatRelativeTime(apiPet.foundAt),
     createdAt: apiPet.foundAt,
     location: apiPet.locationText,
-    neighborhood: apiPet.neighborhood,
     coordinates: [apiPet.latitude, apiPet.longitude],
     description: apiPet.description,
     ownerName: apiPet.owner.fullName,
@@ -47,17 +46,12 @@ export function formatAbsoluteDateTime(isoDate?: string): string {
     return "sin fecha";
   }
 
-  const parts = new Intl.DateTimeFormat("es-AR", {
+  return date.toLocaleString("es-AR", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
-    hour12: false,
-    hourCycle: "h23",
     timeZone: "America/Argentina/Buenos_Aires",
-  }).formatToParts(date);
-
-  const partByType = Object.fromEntries(parts.map((part) => [part.type, part.value]));
-  return `${partByType.day}/${partByType.month}/${partByType.year}, ${partByType.hour}:${partByType.minute}`;
+  });
 }
