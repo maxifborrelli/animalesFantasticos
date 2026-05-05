@@ -1,10 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import { Calendar, MapPin, X } from "lucide-react";
+import { Calendar, MapPin, X, User } from "lucide-react";
 import { formatAbsoluteDateTime } from "@/features/home/lib/pet-utils";
 import { Pet } from "@/features/home/types";
+import { ContactModal } from "./contact-modal";
 
 const MapContainer = dynamic(
   () => import("react-leaflet").then((mod) => mod.MapContainer),
@@ -30,16 +32,25 @@ interface PetDetailsModalProps {
 }
 
 export function PetDetailsModal({ pet, open, onClose }: PetDetailsModalProps) {
+
+  const [contactModalOpen, setContactModalOpen] = useState(false);
+
   if (!open || !pet) {
     return null;
   }
+
+  // Función para cerrar todo de forma limpia
+  const handleClose = () => {
+    setContactModalOpen(false);
+    onClose();
+  };
 
   return (
     <div className="fixed inset-0 z-[2100] flex items-center justify-center bg-black/50 p-4">
       <div className="relative max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-3xl bg-white shadow-2xl">
         <button
           type="button"
-          onClick={onClose}
+          onClick={handleClose}
           className="absolute right-4 top-4 z-10 rounded-full bg-white/90 p-2 backdrop-blur-sm transition-colors hover:bg-white"
         >
           <X className="h-5 w-5" />
@@ -117,19 +128,29 @@ export function PetDetailsModal({ pet, open, onClose }: PetDetailsModalProps) {
             </div>
           </div>
 
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <a
-              href={pet.ownerPhone ? `tel:${pet.ownerPhone}` : "#"}
-              className="flex-1 rounded-full bg-primary px-4 py-2 text-center text-sm font-semibold text-white hover:bg-primary/90"
-            >
-              {pet.ownerPhone ? "Llamar a quien lo encontro" : "Llamar al dueno"}
-            </a>
-            <button className="flex-1 rounded-full border border-border px-4 py-2 text-sm font-semibold text-foreground">
-              Enviar mensaje
-            </button>
+         {/* BOTON MODIFICADO: Ahora abre el segundo modal y el texto es blanco */}
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <button
+                onClick={() => setContactModalOpen(true)}
+                className="flex-1 rounded-full bg-primary px-4 py-2 text-center text-sm font-semibold text-white hover:bg-primary/90"
+              >
+                Contactarse
+              </button>
           </div>
         </div>
       </div>
+
+      {/* RENDERIZADO DEL NUEVO COMPONENTE EXTERNO */}
+      <ContactModal 
+        open={contactModalOpen} 
+        onClose={() => setContactModalOpen(false)} 
+        pet={pet} 
+      />
+      
     </div>
+    
+    
+   
+    
   );
 }

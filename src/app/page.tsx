@@ -1,5 +1,5 @@
 import "leaflet/dist/leaflet.css";
-import { HomeScreen } from "@/features/home/pages/home-screen";
+
 
 const MapContainer = dynamic(
   () => import("react-leaflet").then((mod) => mod.MapContainer),
