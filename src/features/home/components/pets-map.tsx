@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import type { LeafletMouseEvent } from "leaflet";
+import { formatAbsoluteDateTime } from "@/features/home/lib/pet-utils";
 import { Pet } from "@/features/home/types";
 
 const MapContainer = dynamic(
@@ -91,13 +92,7 @@ export function PetsMap({ pets, onMapClick, onMarkerClick, onPetSelect }: PetsMa
                   {pet.createdAt && (
                     <div className="text-[10px] leading-none text-muted-foreground flex items-center">
                       <span className="font-semibold text-foreground mr-1">Publicado:</span>
-                      {new Date(pet.createdAt).toLocaleString("es-AR", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit"
-                      })}
+                      {formatAbsoluteDateTime(pet.createdAt)}
                     </div>
                   )}
                   {pet.lastSeen && (

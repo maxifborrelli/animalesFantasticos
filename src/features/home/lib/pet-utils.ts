@@ -46,12 +46,26 @@ export function formatAbsoluteDateTime(isoDate?: string): string {
     return "sin fecha";
   }
 
-  return date.toLocaleString("es-AR", {
+  const formatter = new Intl.DateTimeFormat("en-GB", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
+    hour12: false,
     timeZone: "America/Argentina/Buenos_Aires",
   });
+
+  const parts = formatter.formatToParts(date);
+  const day = parts.find((part) => part.type === "day")?.value;
+  const month = parts.find((part) => part.type === "month")?.value;
+  const year = parts.find((part) => part.type === "year")?.value;
+  const hour = parts.find((part) => part.type === "hour")?.value;
+  const minute = parts.find((part) => part.type === "minute")?.value;
+
+  if (!day || !month || !year || !hour || !minute) {
+    return "sin fecha";
+  }
+
+  return `${day}/${month}/${year}, ${hour}:${minute}`;
 }
