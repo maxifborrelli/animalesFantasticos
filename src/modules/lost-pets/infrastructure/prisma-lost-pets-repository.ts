@@ -43,6 +43,19 @@ function mapLostPetRecord(pet: {
 }
 
 export class PrismaLostPetsRepository implements LostPetsRepository {
+  async listLostPets(): Promise<LostPet[]> {
+    const pets = await prisma.lostPet.findMany({
+      include: {
+        owner: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    return pets.map((pet) => mapLostPetRecord(pet));
+  }
+
   async createLostPet(input: RegisterLostPetInput): Promise<LostPet> {
     const createdPet = await prisma.$transaction(async (tx) => {
       const owner = await tx.owner.create({

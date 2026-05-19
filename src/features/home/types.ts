@@ -33,6 +33,25 @@ export interface ApiFoundPet {
   };
 }
 
+export interface ApiLostPet {
+  id: number;
+  name: string;
+  species: string;
+  breed: string;
+  imageUrl: string;
+  description: string;
+  locationText: string;
+  latitude: number;
+  longitude: number;
+  lastSeen: string;
+  createdAt: string;
+  owner: {
+    fullName: string;
+    phone: string;
+    email: string | null;
+  };
+}
+
 export interface FiltersState {
   status: string;
   species: string;

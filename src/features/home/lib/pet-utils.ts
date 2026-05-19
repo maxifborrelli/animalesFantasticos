@@ -1,4 +1,4 @@
-import { ApiFoundPet, Pet } from "@/features/home/types";
+import { ApiFoundPet, ApiLostPet, Pet } from "@/features/home/types";
 
 export function mapApiPetToUiPet(apiPet: ApiFoundPet): Pet {
   return {
@@ -16,6 +16,25 @@ export function mapApiPetToUiPet(apiPet: ApiFoundPet): Pet {
     // Guardamos también la fecha original por si después necesitás ordenar o calcular
     createdAt: apiPet.foundAt,
 
+    location: apiPet.locationText,
+    coordinates: [apiPet.latitude, apiPet.longitude],
+    description: apiPet.description,
+    ownerName: apiPet.owner.fullName,
+    ownerPhone: apiPet.owner.phone,
+  };
+}
+
+export function mapApiLostPetToUiPet(apiPet: ApiLostPet): Pet {
+  return {
+    id: `db-lost-${apiPet.id}`,
+    name: apiPet.name,
+    status: "lost",
+    species: apiPet.species,
+    breed: apiPet.breed,
+    image: apiPet.imageUrl,
+    distance: "nuevo",
+    lastSeen: apiPet.lastSeen,
+    createdAt: apiPet.createdAt,
     location: apiPet.locationText,
     coordinates: [apiPet.latitude, apiPet.longitude],
     description: apiPet.description,

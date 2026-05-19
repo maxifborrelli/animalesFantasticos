@@ -105,6 +105,7 @@ Para crear la conexion al contenedor:
 
 - `GET /api/found-pets`: lista mascotas guardadas.
 - `POST /api/found-pets`: crea mascota + responsable.
+- `GET /api/lost-pets`: lista mascotas perdidas guardadas.
 - `POST /api/lost-pets`: crea reporte de mascota perdida + responsable.
 
 ## Como esta organizado el proyecto

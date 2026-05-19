@@ -3,8 +3,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { mockPets } from "@/features/home/data/mock-pets";
-import { mapApiPetToUiPet } from "@/features/home/lib/pet-utils";
-import type { ApiFoundPet, FiltersState, Pet } from "@/features/home/types";
+import { mapApiLostPetToUiPet, mapApiPetToUiPet } from "@/features/home/lib/pet-utils";
+import type { ApiFoundPet, ApiLostPet, FiltersState, Pet } from "@/features/home/types";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export const defaultFilters: FiltersState = {
@@ -138,29 +138,61 @@ export function usePetsSearch() {
   const [dbPets, setDbPets] = useState<Pet[]>([]);
   const [filters, setFilters] = useState<FiltersState>(initialFilters);
 
-    useEffect(() => {
+  useEffect(() => {
     setFilters(initialFilters);
   }, [initialFilters]);
 
+  const fetchPets = useCallback(async () => {
+    const [foundResult, lostResult] = await Promise.allSettled([
+      fetch("/api/found-pets", {
+        method: "GET",
+        cache: "no-store",
+      }),
+      fetch("/api/lost-pets", {
+        method: "GET",
+        cache: "no-store",
+      }),
+    ]);
+
+    const nextPets: Pet[] = [];
+
+    if (foundResult.status === "fulfilled") {
+      if (foundResult.value.ok) {
+        const data = (await foundResult.value.json()) as {
+          pets: ApiFoundPet[];
+        };
+        nextPets.push(...data.pets.map(mapApiPetToUiPet));
+      } else {
+        console.error("GET /api/found-pets failed", foundResult.value.status);
+      }
+    } else {
+      console.error(foundResult.reason);
+    }
+
+    if (lostResult.status === "fulfilled") {
+      if (lostResult.value.ok) {
+        const data = (await lostResult.value.json()) as { pets: ApiLostPet[] };
+        nextPets.push(...data.pets.map(mapApiLostPetToUiPet));
+      } else {
+        console.error("GET /api/lost-pets failed", lostResult.value.status);
+      }
+    } else {
+      console.error(lostResult.reason);
+    }
+
+    return nextPets;
+  }, []);
 
   useEffect(() => {
     let active = true;
 
-    async function loadFoundPets() {
+    async function loadPets() {
       try {
-        const response = await fetch("/api/found-pets", {
-          method: "GET",
-          cache: "no-store",
-        });
-
-        if (!response.ok) {
-          throw new Error("No se pudieron obtener reportes guardados.");
-        }
-
-        const data = (await response.json()) as { pets: ApiFoundPet[] };
+        setLoadingDbPets(true);
+        const nextPets = await fetchPets();
 
         if (active) {
-          setDbPets(data.pets.map(mapApiPetToUiPet));
+          setDbPets(nextPets);
         }
       } catch (error) {
         if (active) {
@@ -173,12 +205,24 @@ export function usePetsSearch() {
       }
     }
 
-    loadFoundPets();
+    loadPets();
 
     return () => {
       active = false;
     };
-  }, []);
+  }, [fetchPets]);
+
+  const refreshPets = useCallback(async () => {
+    try {
+      setLoadingDbPets(true);
+      const nextPets = await fetchPets();
+      setDbPets(nextPets);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingDbPets(false);
+    }
+  }, [fetchPets]);
 
   const filtersQueryString = useMemo(() => {
     return buildFiltersQueryString(filters);
@@ -279,5 +323,6 @@ export function usePetsSearch() {
     handleFilterChange,
     clearFilters,
     addFoundPetFromPayload,
+    refreshPets,
   };
 }

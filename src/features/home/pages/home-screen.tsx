@@ -33,6 +33,7 @@ export function HomeScreen() {
     handleFilterChange,
     clearFilters,
     addFoundPetFromPayload,
+    refreshPets,
   } = usePetsSearch();
   useEffect(() => {
     import("leaflet").then((L) => {
@@ -75,6 +76,7 @@ export function HomeScreen() {
 
   const handleReportSuccess = (payload: unknown) => {
     setReportLocation(null);
+    refreshPets();
 
     if (reportType !== "found") {
       return;
