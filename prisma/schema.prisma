@@ -28,12 +28,16 @@ model User {
   passwordHash String    @map("password_hash")
   createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt    DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  foundPets    FoundPet[]
+  lostPets     LostPet[]
 
   @@map("users")
 }
 
 model FoundPet {
   id          BigInt   @id @default(autoincrement()) @db.BigInt
+  userId      BigInt?  @map("user_id") @db.BigInt
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   ownerId     BigInt   @map("owner_id") @db.BigInt
   owner       Owner    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   name        String
@@ -47,12 +51,15 @@ model FoundPet {
   foundAt     DateTime @default(now()) @map("found_at") @db.Timestamptz(6)
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
 
+  @@index([userId], map: "found_pets_user_id_idx")
   @@index([createdAt(sort: Desc)], map: "found_pets_created_at_idx")
   @@map("found_pets")
 }
 
 model LostPet {
   id           BigInt   @id @default(autoincrement()) @db.BigInt
+  userId       BigInt?  @map("user_id") @db.BigInt
+  user         User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   ownerId      BigInt   @map("owner_id") @db.BigInt
   owner        Owner    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   name         String
@@ -66,6 +73,7 @@ model LostPet {
   lastSeen     String   @map("last_seen") // Usamos String porque en el modal lo capturamos como texto libre ("Hoy a las 15:00 hrs")
   createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
 
+  @@index([userId], map: "lost_pets_user_id_idx")
   @@index([createdAt(sort: Desc)], map: "lost_pets_created_at_idx")
   @@map("lost_pets")
 }

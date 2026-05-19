@@ -9,6 +9,7 @@ export interface LostPetOwner {
 
 export interface LostPet {
   id: number;
+  userId?: number | null;
   name: string;
   species: PetSpecies;
   breed: string;
@@ -23,6 +24,7 @@ export interface LostPet {
 }
 
 export interface RegisterLostPetInput {
+  userId?: number | null;
   pet: {
     name: string;
     species: PetSpecies;
