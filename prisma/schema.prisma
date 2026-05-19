@@ -20,6 +20,18 @@ model Owner {
   @@map("owners")
 }
 
+model User {
+  id           BigInt    @id @default(autoincrement()) @db.BigInt
+  fullName     String    @map("full_name")
+  email        String    @unique
+  phone        String?
+  passwordHash String    @map("password_hash")
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("users")
+}
+
 model FoundPet {
   id          BigInt   @id @default(autoincrement()) @db.BigInt
   ownerId     BigInt   @map("owner_id") @db.BigInt
