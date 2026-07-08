@@ -24,13 +24,17 @@ function formatDate(isoString: string): string {
 
 interface MatchCardProps {
   match: VectorMatch;
+  onSelect: () => void;
 }
 
-function MatchCard({ match }: MatchCardProps) {
+function MatchCard({ match, onSelect }: MatchCardProps) {
   const [contactVisible, setContactVisible] = useState(false);
 
   return (
-    <div className="flex flex-col gap-2 rounded-xl border border-border bg-background p-3 shadow-sm">
+    <div
+      onClick={onSelect}
+      className="flex flex-col gap-2 rounded-xl border border-border bg-background p-3 shadow-sm cursor-pointer hover:border-primary hover:shadow-md transition-all"
+    >
       <div className="flex items-start gap-3">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -66,7 +70,7 @@ function MatchCard({ match }: MatchCardProps) {
 
       {/* Contacto */}
       {contactVisible ? (
-        <div className="rounded-lg bg-muted p-2 text-xs space-y-1">
+        <div className="rounded-lg bg-muted p-2 text-xs space-y-1" onClick={(e) => e.stopPropagation()}>
           <p className="font-medium text-foreground">{match.owner.fullName}</p>
           {match.owner.phone && (
             <p className="text-muted-foreground">
@@ -88,7 +92,7 @@ function MatchCard({ match }: MatchCardProps) {
         </div>
       ) : (
         <button
-          onClick={() => setContactVisible(true)}
+          onClick={(e) => { e.stopPropagation(); setContactVisible(true); }}
           className="w-full rounded-lg border border-primary py-1.5 text-xs font-medium text-primary hover:bg-primary/10 transition-colors"
         >
           Ver datos de contacto
@@ -178,7 +182,11 @@ const SPECIES_OPTIONS = [
   { label: "Otro", emoji: "🐾" },
 ];
 
-export function VisualSearchWidget() {
+interface VisualSearchWidgetProps {
+  onSelectMatch?: (match: VectorMatch) => void;
+}
+
+export function VisualSearchWidget({ onSelectMatch }: VisualSearchWidgetProps) {
   const {
     widgetState,
     species,
@@ -383,7 +391,7 @@ export function VisualSearchWidget() {
                   {matches.length !== 1 ? "s" : ""}. Verificá los datos antes de contactar.
                 </p>
                 {matches.map((match) => (
-                  <MatchCard key={match.id} match={match} />
+                  <MatchCard key={match.id} match={match} onSelect={() => onSelectMatch?.(match)} />
                 ))}
               </>
             )}

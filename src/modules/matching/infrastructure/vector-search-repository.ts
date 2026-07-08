@@ -5,13 +5,16 @@ export interface VectorMatch {
   score: number;
   name: string;
   species: string;
+  sex: string;
   breed: string;
+  description: string;
   imageUrl: string;
   neighborhood: string;
   locationText: string;
   latitude: number;
   longitude: number;
   foundAt: string;
+  ownerId: number;
   owner: { fullName: string; phone: string | null; email: string };
 }
 
@@ -38,13 +41,16 @@ export class VectorSearchRepository {
       score: number;
       name: string;
       species: string;
+      sex: string;
       breed: string;
+      description: string;
       image_url: string;
       neighborhood: string;
       location_text: string;
       latitude: number;
       longitude: number;
       found_at: Date;
+      user_id: bigint;
       full_name: string;
       phone: string | null;
       email: string;
@@ -57,19 +63,22 @@ export class VectorSearchRepository {
             1 - (fp.embedding <=> ${vectorLiteral}::vector) AS score,
             fp.name,
             fp.species,
+            fp.sex,
             fp.breed,
+            fp.description,
             fp.image_url,
             fp.neighborhood,
             fp.location_text,
             fp.latitude,
             fp.longitude,
             fp.found_at,
+            fp.user_id,
             u.full_name,
             u.phone,
             u.email
           FROM found_pets fp
           JOIN users u ON u.id = fp.user_id
-          WHERE fp.embedding IS NOT NULL AND fp.species ILIKE ${species}
+          WHERE fp.embedding IS NOT NULL AND fp.resolved_at IS NULL AND fp.species ILIKE ${species}
           ORDER BY fp.embedding <=> ${vectorLiteral}::vector
           LIMIT ${limit}
         `
@@ -79,19 +88,22 @@ export class VectorSearchRepository {
             1 - (fp.embedding <=> ${vectorLiteral}::vector) AS score,
             fp.name,
             fp.species,
+            fp.sex,
             fp.breed,
+            fp.description,
             fp.image_url,
             fp.neighborhood,
             fp.location_text,
             fp.latitude,
             fp.longitude,
             fp.found_at,
+            fp.user_id,
             u.full_name,
             u.phone,
             u.email
           FROM found_pets fp
           JOIN users u ON u.id = fp.user_id
-          WHERE fp.embedding IS NOT NULL
+          WHERE fp.embedding IS NOT NULL AND fp.resolved_at IS NULL
           ORDER BY fp.embedding <=> ${vectorLiteral}::vector
           LIMIT ${limit}
         `;
@@ -101,13 +113,16 @@ export class VectorSearchRepository {
       score: Number(row.score),
       name: row.name,
       species: row.species,
+      sex: row.sex,
       breed: row.breed,
+      description: row.description,
       imageUrl: row.image_url,
       neighborhood: row.neighborhood,
       locationText: row.location_text,
       latitude: row.latitude,
       longitude: row.longitude,
       foundAt: row.found_at.toISOString(),
+      ownerId: Number(row.user_id),
       owner: { fullName: row.full_name, phone: row.phone, email: row.email },
     }));
   }

@@ -10,6 +10,8 @@ import { SelectedReportPetModal } from "@/features/home/components/selected-repo
 import { LoginRequiredModal } from "@/features/home/components/login-required-modal";
 import { Pet } from "@/features/home/types";
 import type { ReportType } from "@/features/report/types/types";
+import type { VectorMatch } from "@/modules/matching/infrastructure/vector-search-repository";
+import { formatAbsoluteDateTime } from "@/features/home/lib/pet-utils";
 import { ViewPetsListButton } from "../components/view-pets-list-button";
 import { VisualSearchWidget } from "@/features/matching/components/visual-search-widget";
 import { useRouter } from "next/navigation";
@@ -96,6 +98,29 @@ export function HomeScreen() {
     setSelectedPet(pet);
   };
 
+  const handleMatchSelect = (match: VectorMatch) => {
+    const pet: Pet = {
+      id: `db-${match.id}`,
+      name: match.name,
+      status: "found",
+      species: match.species,
+      sex: match.sex,
+      breed: match.breed,
+      image: match.imageUrl,
+      distance: "",
+      lastSeen: formatAbsoluteDateTime(match.foundAt),
+      createdAt: match.foundAt,
+      location: match.locationText,
+      neighborhood: match.neighborhood,
+      coordinates: [match.latitude, match.longitude],
+      description: match.description,
+      ownerId: match.ownerId,
+      ownerName: match.owner.fullName,
+      ownerPhone: match.owner.phone ?? undefined,
+    };
+    handlePetSelect(pet);
+  };
+
   const handleMapClick = (coordinates: [number, number]) => {
     if (!user) {
       setLoginRequiredOpen(true);
@@ -164,7 +189,7 @@ export function HomeScreen() {
             petCount={filteredPets.length}
             onClick={handleViewList}
           />
-          <VisualSearchWidget />
+          <VisualSearchWidget onSelectMatch={handleMatchSelect} />
         </div>
       </div>
 
